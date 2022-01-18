@@ -1,0 +1,29 @@
+/* .nav-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-left: 15px;
+} */
+
+.list-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+}
+
+.buttonPaged {
+    border-radius: 5px;
+    background-color: #b5179e;
+    border-color: #f72585;
+    color: white;
+    height: 25px;
+    width: 50px;
+    margin-bottom: 20px;
+
+    
+}
+
+.buttonPaged:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}

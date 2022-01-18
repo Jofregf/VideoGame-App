@@ -1,0 +1,237 @@
+const axios = require('axios');
+const {Videogame, Genre} = require('../db');
+const {API_KEY} = process.env
+const GAMES = `https://api.rawg.io/api/games?key=${API_KEY}`
+
+//////////////////////////////////////////////////////////
+//* Traigo los videos games desde la API
+//////////////////////////////////////////////////////////
+
+const apiInfo = async () => {
+   let videoApi = [];
+   const allGames = [GAMES];
+   for(let i = 0; i < 5; i++) {
+       const gamesPerPag = await axios.get(`${allGames[i]}`)
+       //console.log(gamesPerPag)
+       allGames.push(gamesPerPag.data.next)
+       const dataGame = gamesPerPag.data.results.map((e) =>
+       
+        {
+            return {
+                id: e.id,
+                name: e.name,
+                description: e.description,
+                image: e.background_image,
+                released: e.released,
+                rating: e.rating,
+                platforms: e.platforms.map(p => p.platform.name),
+                genres: e.genres.map(g => g.name),
+                esrbRating: e.esrb_rating
+            }
+    
+        }
+       )
+       
+       
+       videoApi = videoApi.concat(dataGame);
+    }
+    //console.log(videoApi)
+    return videoApi;
+}
+
+//////////////////////////////////////////////////////////
+//* Traigo los videos games desde la BASE DE DATOS
+//////////////////////////////////////////////////////////
+ const dbInfo = async () => {
+    return await Videogame.findAll({ 
+        include:{
+            model: Genre,
+            attributes: ['name'],
+            through:{
+                attributes: []
+            }
+        }
+    })
+        
+}
+
+//////////////////////////////////////////////////////////
+//* Concateno la Base de Datos con la API
+//////////////////////////////////////////////////////////
+const getAllVideoGames = async () => {
+    let videoApi = await apiInfo();
+    let videoDB = await dbInfo();
+    let totalInfo = videoDB.concat(videoApi);
+    return totalInfo;
+}
+
+//////////////////////////////////////////////////////////
+//* Traigo todos los Videos Games ya sea por nombre o solo por si mismo
+//////////////////////////////////////////////////////////
+
+const getAll = async (req, res, next) => {
+    const {name} = req.query;
+    try {
+        if(name) {
+            const videoDB = await Videogame.findAll({
+                where: {
+                    name: name,
+                },
+                include: {
+                    model: Genre,
+                }
+            })
+            if( videoDB.length !== 0) {
+                //console.log('acaaaaaaa1')
+                let respDB = videoDB.map (v => {
+                    return {
+                        id: v.id,
+                        name: v.name,
+                        description: v.description,
+                        image: v.image,
+                        released: v.released,
+                        rating: v.rating,
+                        platforms: v.platforms,
+                        genres: v.genres.map (v => v.name),
+                        
+                    }
+                    
+                })
+                res.status(200).send(respDB)
+            } else {
+             
+             //console.log(name, "acaaaa2")
+             const videoApi= (await axios.get(`https://api.rawg.io/api/games?search=${name}&key=${API_KEY}`)).data.results;
+             //console.log(videoApi, "primer console.log en get")
+ 
+ 
+             let respApi = videoApi.map( r => {
+                 //console.log(respApi, "segundo console.log en get")
+                 return {
+                     id: r.id,
+                     name: r.name,
+                     description: r.description,
+                     image: r.background_image,
+                     released: r.released,
+                     rating: r.rating,
+                     platforms: r.platforms.map(p => p.platform.name),
+                     genres: r.genres.map(g => g.name),
+                     esrbRating: r.esrb_rating
+                 }
+             })
+               
+             
+             //console.log(respApi)
+             res.status(200).json(respApi)
+            }
+         } else {
+             try {
+                 const allGames = await getAllVideoGames();
+                 res.json(allGames)
+             } catch (error) {
+                 //console.log(error, "acaaaaa1")
+                 next(error);
+                 
+             }
+         }
+     } catch (error) {
+        //console.log(error,"acaaaaaa");
+         res.status(404).send({msg:"Videogame's name not found"})
+        
+     }
+ }
+
+ /////////////////////////////////////////////////////////
+//* Realizo el POST para almacenar los videos juegos creados
+//////////////////////////////////////////////////////////
+
+const postVideoGame = async (req, res, next) => {
+    try {
+        const {name, id, description, image, released, rating, platforms, genres, esrbRating} = req.body;
+        const newVideoGame = await Videogame.create({
+            name, 
+            id, 
+            description,
+            image,
+            released,
+            rating,
+            platforms,
+            
+        })
+
+    let genreDb = await Genre.findAll({ where: {name: genres } }); //name de tabla genre
+    newVideoGame.addGenre(genreDb);
+    res.status(200).send(newVideoGame);
+    
+    } 
+    catch (error) {
+        next(error);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////
+//* Traigo los videos games por su id para ver su detalle
+///////////////////////////////////////////////////////////////////////
+
+const getById = async (req, res, next) => {
+    const {id} = req.params;
+    let gamesId = id;
+    if (id.length > 6) {
+        try {
+            const respDB = await Videogame.findByPk(id, {include: Genre})
+            gamesId= {
+                id: respDB.id,
+                name: respDB.name,
+                description: respDB.description,
+                image: respDB.image,
+                released: respDB.released,
+                rating: respDB.rating,
+                platforms: respDB.platforms,
+                genres: respDB.genres.map(g => g.name),
+                
+            }
+            res.json(gamesId)
+            
+        } catch (error) {
+            next(error);
+            
+        }
+    } else {
+        try {
+            //console.log(id, 'soy id??')
+            const respApi = await axios.get(`https://api.rawg.io/api/games/${id}?&key=${API_KEY}`);
+            const screenshotApi = await axios.get(`https://api.rawg.io/api/games/${id}/screenshots?&key=${API_KEY}`);
+            const trailerApi = await axios.get(`https://api.rawg.io/api/games/${id}/movies?&key=${API_KEY}`);
+            //console.log(respApi, 'devolverá?')
+            gamesID= {
+                id: respApi.data.id,
+                name: respApi.data.name,
+                description: respApi.data.description.replace( /(<([^>]+)>)/ig, ''),
+                image: respApi.data.background_image,
+                released: respApi.data.released,
+                rating: respApi.data.rating,
+                platforms: respApi.data.platforms.map(p => p.platform.name),
+                genres: respApi.data.genres.map(g => g.name),
+                ratings: respApi.data.ratings.map(r => r.title),
+                percent: respApi.data.ratings.map(p=>p.percent),
+                esrbRating: respApi.data.esrb_rating,
+                screenshotApi: screenshotApi.data ? screenshotApi.data.results : null,
+                trailerApi: trailerApi.data.results[0],
+                
+
+            }
+            //console.log(gamesID)
+            res.status(200).send(gamesID)
+            
+        } catch (error) {
+            res.status(404).send({msg:'ID Game not found'})
+        }
+    }
+}
+
+
+ module.exports = {
+    getAll,
+    postVideoGame,
+    getById
+ }

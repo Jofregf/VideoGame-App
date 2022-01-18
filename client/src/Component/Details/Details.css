@@ -1,0 +1,115 @@
+.details-container {
+    background: linear-gradient(to top, #4fb576 0%, #44c489 30%, #28a9ae 46%, #28a2b7 59%, #4c7788 71%, #6c4f63 86%, #432c39 100%);
+    margin-top: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-radius: 20px;
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+}
+.details-img {
+    height: 400px;
+    width: 600px;
+   
+}
+
+.details-name {
+    display: flex;
+    justify-content: center;
+    color: #4361EE;
+    font-size: 60px;
+}
+
+.details-scores{
+    display: flex;
+    justify-content: center;
+    color: #ffea00;
+    font-size: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.title-maps{
+    display: flex;
+    justify-content: center;
+    color: #fb5607;
+    font-size: 20px;
+}
+
+.list-maps{
+    display: flex;
+    justify-content: center;
+    color: #ffea00;
+    font-size: 15px;
+}
+
+.par-maps{
+    display: flex;
+    justify-content: center;
+    color: #9e0059;
+    font-size: 15px;
+}
+
+.container-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.container-img{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+}
+
+.list-vid {
+    display: flex;
+    justify-content: center;
+    
+}
+
+.bn-container {
+    display: flex;
+    justify-content:center;
+    padding-bottom: 15px;
+}
+
+.bn31 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(to right, #4cc9f0 0%, #f72585 100%);
+    border-radius: 40px;
+    box-sizing: border-box;
+    color: #f72585;
+    height: 40px;
+    font-size: 1em;
+    padding: 4px;
+    text-decoration: none;
+    width: 6em;
+    z-index: 2;
+    text-decoration: none;
+  }
+  
+  .bn31:hover {
+    color: #560bad;
+  }
+  
+  .bn31 .bn31span {
+    align-items: center;
+    background: #3f37c9;
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    transition: background 0.5s ease;
+    width: 100%;
+  }
+  
+  .bn31:hover .bn31span {
+    background: transparent;
+  }
