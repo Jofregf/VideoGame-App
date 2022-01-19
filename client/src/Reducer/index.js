@@ -12,6 +12,8 @@ import {
   FILTERBYYEAR,
   //FILTERBYSREB,
   //FILTERRATING
+  FILTERBYPLATFORMS,
+
 } from "../Action/Constants";
 
 const initialState = {
@@ -217,7 +219,17 @@ const rootReducer = (state = initialState, action) => {
     //     videogames : filter
     //   }
 
-
+    case FILTERBYPLATFORMS:
+      const allVideo = state.allVideogames;
+      const filterPlatforms = allVideo.filter((game) =>
+        game.platforms.includes(action.payload)
+      );
+      const platFilter = action.payload === "All" ? allVideo : filterPlatforms;
+      return {
+        ...state,
+        videogames: platFilter,
+      };
+      
     default:
       return state;
   }

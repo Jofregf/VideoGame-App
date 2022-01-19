@@ -10,6 +10,8 @@ import FilterDbOrApi from "../Filter/FilterDBorAPI";
 import FilterGenres from "../Filter/FilterGenres";
 import FilterYear from "../Filter/FilterYear";
 import Spinner from '../Spinner/Spinner'
+import FilterPlatforms from "../Filter/FilterPlatforms";
+
 import "./Home.css";
 
 // export  const sreb = ['Mature', 'Everyone 10+', 'Teen', 'Adults Only', 'null', 'Rating Pending', 'Everyone']
@@ -100,6 +102,7 @@ function Home() {
         <FilterDbOrApi />
         <FilterGenres />
         <FilterYear />
+        <FilterPlatforms/>
 
         <div style={{ height: "100px" }}>
           <select defaultValue={''} onChange={(event) => handleAlpha(event)}>

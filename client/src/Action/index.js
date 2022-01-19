@@ -11,6 +11,8 @@ import {GET_VIDEOGAMES,
     FILTERBYYEAR,
     //FILTERBYSREB,
     //FILTERRATING
+    FILTERBYPLATFORMS,
+
   } from './Constants';
 
 export function getVideoGames() {
@@ -186,3 +188,17 @@ export function filterByYear (payload) {
 //         }
 //     }
 // }
+
+export function filterPlatforms (payload) {
+    return async function (dispatch) {
+        try {
+            dispatch ({
+                type: FILTERBYPLATFORMS, 
+                payload
+            })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+}
