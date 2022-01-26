@@ -150,7 +150,7 @@ function Home() {
           <Spinner />
         )}
       </div>
-      {/* <button onClick={(event) => filterByRating(event)}>filtrar</button> */}
+  
       <Paged
         gamesPerPage={gamesPerPage}
         gamesLength={videogames.length}

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getGenres} = require('../Compiladores/Genres')
+const {getGenres, newGenre} = require('../Compiladores/Genres')
 const {API_KEY} = process.env
 
 
@@ -12,6 +12,8 @@ router.use(express.json());
 ///////////////////////////////////////////////////////////
 
 router.get('/', getGenres);
+
+router.post('/', newGenre)
 
 
 

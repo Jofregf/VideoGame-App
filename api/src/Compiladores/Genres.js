@@ -29,6 +29,21 @@ const getGenres = async (req, res, next) => {
     };
 };
 
+const newGenre = async (req, res) => {
+    const {genre} = req.body;
+    try {
+        const newGenre = await Genre.create({
+           
+            name:genre 
+        }) 
+        res.json(newGenre)
+    }
+    catch(error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     getGenres,
+    newGenre
 }

@@ -100,29 +100,32 @@ const getAll = async (req, res, next) => {
                 res.status(200).send(respDB)
             } else {
              
-             //console.log(name, "acaaaa2")
+            //  console.log(name, "acaaaa2")
              const videoApi= (await axios.get(`https://api.rawg.io/api/games?search=${name}&key=${API_KEY}`)).data.results;
+            //  return res.send(videoApi)
+             
              //console.log(videoApi, "primer console.log en get")
  
  
              let respApi = videoApi.map( r => {
-                 //console.log(respApi, "segundo console.log en get")
+                 console.log(r)
                  return {
+                     
                      id: r.id,
                      name: r.name,
                      description: r.description,
                      image: r.background_image,
                      released: r.released,
                      rating: r.rating,
-                     platforms: e.platforms.map(p => p.platform.name.toUpperCase()),
+                     platforms: r.platforms.map(p => p.platform.name),
                      genres: r.genres.map(g => g.name),
                      esrbRating: r.esrb_rating
                  }
              })
                
              
-             //console.log(respApi)
-             res.status(200).json(respApi)
+             console.log(respApi, 'resapi')
+             return res.status(200).json(respApi)
             }
          } else {
              try {
